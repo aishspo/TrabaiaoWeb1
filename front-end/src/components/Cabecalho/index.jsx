@@ -18,7 +18,6 @@ const Container = styled.div`
 `;
 
 const LinkEstilizado = styled.a`
-  color: blue;
   font-weight: 700;
 `;
 
