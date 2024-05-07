@@ -13,31 +13,32 @@ const Campo = styled.input`
 `;
 
 const Rotulo = styled.label`
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
-  font-family: "Inter", sans-serif;
   display: block;
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
+  color: var(--azul-escuro);
 `;
 
 const Container = styled.div`
   width: 100%;
 `;
 
-const MensagemErro = styled.p`
-  color: red;
-  font-size: 14px;
-`;
+interface Props {
+  valor: string;
+  tipo: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+  label?: string;
+}
 
-const CampoDigitacao = ({
+export default function CampoDigitacao({
   valor,
   tipo,
   placeholder,
-  register,
-  erro,
+  onChange,
   label,
-}) => {
+}: Props) {
   return (
     <Container>
       <Rotulo>{label}</Rotulo>
@@ -45,11 +46,9 @@ const CampoDigitacao = ({
         type={tipo}
         value={valor}
         placeholder={placeholder}
-        {...register}
+        onChange={(e) => onChange(e.target.value)}
+        required
       />
-      {erro && <MensagemErro>{erro}</MensagemErro>}
     </Container>
   );
-};
-
-export default CampoDigitacao;
+}

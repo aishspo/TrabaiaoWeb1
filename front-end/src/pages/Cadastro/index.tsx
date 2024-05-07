@@ -1,28 +1,12 @@
-import styled from "styled-components";
-import CampoDigitacao from "../../components/CampoDigitacao";
+import { useState } from "react";
 import Botao from "../../components/Botao";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import IAluno from "../../types/IAluno";
+import CampoDigitacao from "../../components/CampoDigitacao";
+import IUsuario from "../../types/IUsuario";
+import { Ocupaçao } from "../../types/IUsuario";
 import usePost from "../../usePost";
-
-interface PropsCustomizadas {
-  cor: string;
-}
-
-const StepCustomizada = styled.div<PropsCustomizadas>`
-  background-color: ${({ cor }) => cor};
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-`;
-
-const Titulo = styled.h2`
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 28px;
-  color: var(--cinza);
-`;
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import React from "react";
 
 const Formulario = styled.form`
   width: 70%;
@@ -46,36 +30,38 @@ export default function Cadastro() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
-  const [cnpj, setCnpj] = useState("");
   const [senhaVerificada, setSenhaVerificada] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [cep, setCep] = useState("");
-  const [rua, setRua] = useState("");
-  const [numero, setNumero] = useState("");
-  const [estado, setEstado] = useState("");
-  const [complemento, setComplemento] = useState("");
+
   const { cadastrarDados, erro, sucesso } = usePost();
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // previne o envio padrão do formulário
 
-    const aluno: IAluno = {
+    if (senha !== senhaVerificada) {
+      alert("As senhas não correspondem.");
+      return;
+    }
+
+    // Obter o valor selecionado do campo de entrada de rádio de ocupação
+    const ocupacaoSelecionada: string | null = (
+      document.querySelector(
+        'input[name="ocupacao"]:checked'
+      ) as HTMLInputElement
+    )?.value;
+
+    const usuario: IUsuario = {
       email: email,
       nome: nome,
       senha: senha,
+      Ocupaçao: ocupacaoSelecionada === 'aluno' ? Ocupaçao.Aluno : Ocupaçao.Professor
     };
-
-    try {
-      cadastrarDados({ url: "aluno", dados: aluno });
-      navigate("/login");
-    } catch (erro) {
-      erro && alert("Erro ao cadastrar os dados.");
-    }
+    // aa
+    console.log(usuario);
   };
 
   return (
-    <>
+    <Container>
       <Formulario onSubmit={handleSubmit}>
         <CampoDigitacao
           tipo="text"
@@ -105,8 +91,15 @@ export default function Cadastro() {
           placeholder="Confirme sua senha"
           onChange={setSenhaVerificada}
         />
-        <BotaoCustomizado type="submit">Salvar</BotaoCustomizado>
+
+        <input type="radio" name="Ocupaçao" value="aluno" />
+        <label htmlFor="aluno">Aluno</label>
+
+        <input type="radio" name="Ocupaçao" value="professor" />
+        <label htmlFor="professor">Professor</label>
+
+        <BotaoCustomizado type="submit">Avançar</BotaoCustomizado>
       </Formulario>
-    </>
+    </Container>
   );
 }

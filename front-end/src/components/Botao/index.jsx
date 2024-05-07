@@ -8,7 +8,7 @@ const Botao = styled.button`
   border: none;
   margin-top: 1em;
   font-weight: 700;
-  cursor: hover;
+  cursor: pointer;
 `;
 
 export default Botao;
