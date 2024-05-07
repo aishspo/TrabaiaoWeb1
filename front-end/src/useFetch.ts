@@ -12,4 +12,8 @@ export default function useFetch<T>({ url }: { url: string }) {
 
     return { dados, erro }
 
-}
+} 
+
+// const funcionarios = getFuncionasrios()
+
+// useEffect 

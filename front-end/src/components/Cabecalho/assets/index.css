@@ -1,0 +1,9 @@
+span {
+    color: white;
+}
+
+span:hover {
+    /* cor aleatória */
+    color: #F29F05;
+    transition: .3s ease-in-out;
+}

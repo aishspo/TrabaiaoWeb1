@@ -32,6 +32,17 @@ export default function Cadastro() {
   const [nome, setNome] = useState("");
   const [senhaVerificada, setSenhaVerificada] = useState("");
 
+  const [Ocupaçao, setOcupacao] = useState('');
+  const [disciplina, setDisciplina] = useState('');
+
+  const handleOcupacaoChange = (event) => {
+    setOcupacao(event.target.value);
+  };
+
+  const handleDisciplinaChange = (event) => {
+    setDisciplina(event.target.value);
+  };
+
   const { cadastrarDados, erro, sucesso } = usePost();
   const navigate = useNavigate();
 
@@ -56,7 +67,7 @@ export default function Cadastro() {
       senha: senha,
       Ocupaçao: ocupacaoSelecionada === 'aluno' ? Ocupaçao.Aluno : Ocupaçao.Professor
     };
-    // aa
+
     console.log(usuario);
   };
 
@@ -92,12 +103,37 @@ export default function Cadastro() {
           onChange={setSenhaVerificada}
         />
 
-        <input type="radio" name="Ocupaçao" value="aluno" />
-        <label htmlFor="aluno">Aluno</label>
+      <label htmlFor="aluno">
+        <input
+          type="radio"
+          name="Ocupaçao"
+          value="aluno"
+          checked={Ocupaçao === 'aluno'}
+          onChange={handleOcupacaoChange}
+        />
+          Aluno
+       </label>
 
-        <input type="radio" name="Ocupaçao" value="professor" />
-        <label htmlFor="professor">Professor</label>
+       <label htmlFor="professor">
+        <input
+          type="radio"
+          name="Ocupaçao"
+          value="professor"
+          checked={Ocupaçao === 'professor'}
+          onChange={handleOcupacaoChange}
+        />
+          Professor
+        </label>
 
+        {Ocupaçao === 'professor' && (
+        <select value={disciplina} onChange={handleDisciplinaChange}>
+            <option value="">Selecione uma disciplina</option>
+            <option value="matematica">Matemática</option>
+            <option value="historia">História</option>
+            <option value="ciencias">Ciências</option>
+            <option value="literatura">Literatura</option>
+          </select>
+        )}
         <BotaoCustomizado type="submit">Avançar</BotaoCustomizado>
       </Formulario>
     </Container>
