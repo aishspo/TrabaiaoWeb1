@@ -47,10 +47,11 @@ export default function Cadastro() {
       return;
     }
 
-    // Obter o valor selecionado do campo de entrada de rádio de ocupação
+    // Obter o valor selecionado do campo de entrada de ocupação
     const ocupacaoSelecionadaElement = document.querySelector<HTMLInputElement>(
       'input[name="Ocupaçao"]:checked'
     );
+
     // verificação adicional para garantir que o elemento retornado pelo querySelector seja convertido para um HTMLInputElement
     const ocupacaoSelecionada = ocupacaoSelecionadaElement ? ocupacaoSelecionadaElement.value : null;
     
@@ -67,7 +68,10 @@ export default function Cadastro() {
 
     console.log(usuario);
 
-    // Enviar dados para o backend
+
+// ----------------------------------------------------- 
+// Enviar dados para o backend
+
     axios
       .post("http://localhost:3000/cadastro", {
         email,
@@ -82,6 +86,8 @@ export default function Cadastro() {
         console.log(error);
       });
   };
+
+// ----------------------------------------------------- 
 
   return (
     <Container>

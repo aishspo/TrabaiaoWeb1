@@ -2,9 +2,8 @@ const express = require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-
 const app = express();
-const port = 3000
+const port = 3000;
 
 app.get("/", (req, res) => {
   res.send("Página inicial");
@@ -58,6 +57,25 @@ app.post("/login", (req, res) => {
 
     // Login bem-sucedido
     res.json({ message: "Login bem-sucedido" });
+  });
+});
+
+// Rota para cadastro de usuário
+router.post('/cadastro', (req, res) => {
+  const { email, senha, nome, ocupacao, disciplina } = req.body;
+
+  // Consulta SQL para inserir o novo usuário
+  const sql = 'INSERT INTO Usuario (email, senha, nome, ocupacao, disciplina) VALUES (?, ?, ?, ?, ?)';
+  const values = [email, senha, nome, ocupacao, disciplina];
+
+  // Executar a consulta SQL
+  connection.query(sql, values, (error, results) => {
+    if (error) {
+      console.error('Erro ao inserir novo usuário:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+
+    res.json({ message: 'Novo usuário cadastrado com sucesso' });
   });
 });
 
