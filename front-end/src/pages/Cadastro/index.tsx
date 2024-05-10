@@ -1,12 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Botao from "../../components/Botao";
 import CampoDigitacao from "../../components/CampoDigitacao";
-import IUsuario from "../../types/IUsuario";
 import { Ocupaçao } from "../../types/IUsuario";
-import usePost from "../../usePost";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
-import React from "react";
 
 const Formulario = styled.form`
   width: 70%;
@@ -31,11 +28,18 @@ export default function Cadastro() {
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [senhaVerificada, setSenhaVerificada] = useState("");
+  const [ocupacao, setOcupacao] = useState("");
+  const [disciplina, setDisciplina] = useState("");
 
-  const { cadastrarDados, erro, sucesso } = usePost();
-  const navigate = useNavigate();
+  const handleOcupacaoChange = (event) => {
+    setOcupacao(event.target.value);
+  };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleDisciplinaChange = (event) => {
+    setDisciplina(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
     event.preventDefault(); // previne o envio padrão do formulário
 
     if (senha !== senhaVerificada) {
@@ -44,20 +48,39 @@ export default function Cadastro() {
     }
 
     // Obter o valor selecionado do campo de entrada de rádio de ocupação
-    const ocupacaoSelecionada: string | null = (
-      document.querySelector(
-        'input[name="ocupacao"]:checked'
-      ) as HTMLInputElement
-    )?.value;
+    const ocupacaoSelecionadaElement = document.querySelector<HTMLInputElement>(
+      'input[name="Ocupaçao"]:checked'
+    );
+    // verificação adicional para garantir que o elemento retornado pelo querySelector seja convertido para um HTMLInputElement
+    const ocupacaoSelecionada = ocupacaoSelecionadaElement ? ocupacaoSelecionadaElement.value : null;
+    
 
-    const usuario: IUsuario = {
+    const usuario = {
       email: email,
       nome: nome,
       senha: senha,
-      Ocupaçao: ocupacaoSelecionada === 'aluno' ? Ocupaçao.Aluno : Ocupaçao.Professor
+      Ocupaçao:
+        ocupacaoSelecionada === "aluno"
+          ? Ocupaçao.Aluno
+          : Ocupaçao.Professor,
     };
-    // aa
+
     console.log(usuario);
+
+    // Enviar dados para o backend
+    axios
+      .post("http://localhost:3000/cadastro", {
+        email,
+        senha,
+        nome,
+        Ocupaçao: usuario.Ocupaçao,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -92,12 +115,37 @@ export default function Cadastro() {
           onChange={setSenhaVerificada}
         />
 
-        <input type="radio" name="Ocupaçao" value="aluno" />
-        <label htmlFor="aluno">Aluno</label>
+        <label htmlFor="aluno">
+          <input
+            type="radio"
+            name="Ocupaçao"
+            value="aluno"
+            checked={ocupacao === "aluno"}
+            onChange={handleOcupacaoChange}
+          />
+          Aluno
+        </label>
 
-        <input type="radio" name="Ocupaçao" value="professor" />
-        <label htmlFor="professor">Professor</label>
+        <label htmlFor="professor">
+          <input
+            type="radio"
+            name="Ocupaçao"
+            value="professor"
+            checked={ocupacao === "professor"}
+            onChange={handleOcupacaoChange}
+          />
+          Professor
+        </label>
 
+        {ocupacao === "professor" && (
+          <select value={disciplina} onChange={handleDisciplinaChange}>
+            <option value="">Selecione uma disciplina</option>
+            <option value="matematica">Matemática</option>
+            <option value="historia">História</option>
+            <option value="ciencias">Ciências</option>
+            <option value="literatura">Literatura</option>
+          </select>
+        )}
         <BotaoCustomizado type="submit">Avançar</BotaoCustomizado>
       </Formulario>
     </Container>
