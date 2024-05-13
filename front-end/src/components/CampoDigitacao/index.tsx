@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const Campo = styled.input`
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+  font-family: "Inter", sans-serif;
   background: #f0f0f0;
   margin: 1em 0;
   box-sizing: border-box;
@@ -13,12 +15,13 @@ const Campo = styled.input`
 `;
 
 const Rotulo = styled.label`
-  display: block;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+font-family: "Inter", sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
-  color: var(--azul-escuro);
 `;
+
 
 const Container = styled.div`
   width: 100%;

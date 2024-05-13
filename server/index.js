@@ -1,12 +1,17 @@
 const express = require("express");
+const path = require("path");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const app = express();
 const port = 3000;
 
+// Servindo arquivos estáticos da pasta de build do React
+app.use(express.static(path.join(__dirname, "../front-end/dist")));
+
+// Rota para a página inicial
 app.get("/", (req, res) => {
-  res.send("Página inicial");
+  res.sendFile(path.join(__dirname, "../front-end/dist", "index.html"));
 });
 
 // Configurando a CSP com a diretiva 'font-src' para permitir o carregamento de fontes
@@ -31,38 +36,19 @@ const connection = mysql.createConnection({
   database: "sagu",
 });
 
-// Rota de login
-app.post("/login", (req, res) => {
-  const { email, senha } = req.body;
-
-  // Consulta SQL para verificar se o usuário com o email fornecido existe
-  const sql = "SELECT * FROM Usuario WHERE email = ?";
-
-  connection.query(sql, [email], (error, results) => {
-    if (error) {
-      console.error("Erro ao consultar o banco de dados:", error);
-      return res.status(500).json({ error: "Erro interno do servidor" });
-    }
-
-    // Verificando se o usuário foi encontrado
-    if (results.length === 0) {
-      return res.status(401).json({ error: "Usuário não encontrado" });
-    }
-
-    // Verificando se a senha está correta
-    const usuario = results[0];
-    if (usuario.senha !== senha) {
-      return res.status(401).json({ error: "Senha incorreta" });
-    }
-
-    // Login bem-sucedido
-    res.json({ message: "Login bem-sucedido" });
-  });
+// Rota para exibir o formulário de cadastro
+app.get("/cadastro", (req, res) => {
+  res.sendFile(path.join(__dirname, "../front-end/dist", "index.html"));
 });
 
-// Rota para cadastro de usuário
-router.post('/cadastro', (req, res) => {
+// Rota de cadastro de usuário
+app.post("/cadastro", (req, res) => {
   const { email, senha, nome, ocupacao, disciplina } = req.body;
+
+  // Validação dos dados (exemplo básico)
+  if (!email || !senha || !nome || !ocupacao || !disciplina) {
+    return res.status(400).json({ error: 'Por favor, preencha todos os campos' });
+  }
 
   // Consulta SQL para inserir o novo usuário
   const sql = 'INSERT INTO Usuario (email, senha, nome, ocupacao, disciplina) VALUES (?, ?, ?, ?, ?)';
@@ -78,6 +64,14 @@ router.post('/cadastro', (req, res) => {
     res.json({ message: 'Novo usuário cadastrado com sucesso' });
   });
 });
+
+
+// Rota de login
+app.post("/login", (req, res) => {
+  // Lógica de login
+});
+
+
 
 // Iniciando o servidor
 app.listen(port, () => {

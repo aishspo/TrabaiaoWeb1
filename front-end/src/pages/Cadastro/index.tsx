@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Botao from "../../components/Botao";
 import CampoDigitacao from "../../components/CampoDigitacao";
+import radioOptions from "../../components/Radio";
+import DynamicRadio from "../../components/Radio";
+import DynamicSelect from "../../components/Radio";
+
 import { Ocupaçao } from "../../types/IUsuario";
 import axios from "axios";
 import styled from "styled-components";
@@ -53,24 +57,37 @@ export default function Cadastro() {
     );
 
     // verificação adicional para garantir que o elemento retornado pelo querySelector seja convertido para um HTMLInputElement
-    const ocupacaoSelecionada = ocupacaoSelecionadaElement ? ocupacaoSelecionadaElement.value : null;
-    
+    const ocupacaoSelecionada = ocupacaoSelecionadaElement
+      ? ocupacaoSelecionadaElement.value
+      : null;
 
     const usuario = {
       email: email,
       nome: nome,
       senha: senha,
       Ocupaçao:
-        ocupacaoSelecionada === "aluno"
-          ? Ocupaçao.Aluno
-          : Ocupaçao.Professor,
+        ocupacaoSelecionada === "aluno" ? Ocupaçao.Aluno : Ocupaçao.Professor,
     };
 
     console.log(usuario);
 
+    const radioOptions = [
+      { value: "aluno", label: "Aluno" },
+      { value: "professor", label: "Professor" },
+    ];
 
-// ----------------------------------------------------- 
-// Enviar dados para o backend
+    const selectOptions = [
+      { value: "", label: "Selecione uma disciplina" },
+      { value: "rc", label: "Redes de computadores" },
+      { value: "aps", label: "Análise e projeto de sistemas" },
+      { value: "mapn", label: "Modelagem e Análise de Processo de Negócios" },
+      { value: "bd", label: "Banco de Dados" },
+      { value: "lp", label: "Linguagem de Programação" },
+      { value: "dw", label: "Desenvolvimento Web" },
+    ];
+
+    // -----------------------------------------------------
+    // Enviar dados para o backend
 
     axios
       .post("http://localhost:3000/cadastro", {
@@ -87,7 +104,7 @@ export default function Cadastro() {
       });
   };
 
-// ----------------------------------------------------- 
+  // -----------------------------------------------------
 
   return (
     <Container>
@@ -121,37 +138,20 @@ export default function Cadastro() {
           onChange={setSenhaVerificada}
         />
 
-        <label htmlFor="aluno">
-          <input
-            type="radio"
-            name="Ocupaçao"
-            value="aluno"
-            checked={ocupacao === "aluno"}
-            onChange={handleOcupacaoChange}
-          />
-          Aluno
-        </label>
-
-        <label htmlFor="professor">
-          <input
-            type="radio"
-            name="Ocupaçao"
-            value="professor"
-            checked={ocupacao === "professor"}
-            onChange={handleOcupacaoChange}
-          />
-          Professor
-        </label>
+        <DynamicRadio
+          options={Professor}
+          selectedValue={professor}
+          onChange={handleOcupacaoChange}
+        />
 
         {ocupacao === "professor" && (
-          <select value={disciplina} onChange={handleDisciplinaChange}>
-            <option value="">Selecione uma disciplina</option>
-            <option value="matematica">Matemática</option>
-            <option value="historia">História</option>
-            <option value="ciencias">Ciências</option>
-            <option value="literatura">Literatura</option>
-          </select>
+          <DynamicSelect
+            options={selectOptions}
+            value={disciplina}
+            onChange={handleDisciplinaChange}
+          />
         )}
+
         <BotaoCustomizado type="submit">Avançar</BotaoCustomizado>
       </Formulario>
     </Container>
