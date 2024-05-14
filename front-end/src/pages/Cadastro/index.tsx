@@ -23,7 +23,8 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-export default function Cadastro() {
+export default async function Cadastro() {
+  const response = await fetch("http://localhost:3000/cors", { mode: "cors" });
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
@@ -53,24 +54,25 @@ export default function Cadastro() {
     );
 
     // verificação adicional para garantir que o elemento retornado pelo querySelector seja convertido para um HTMLInputElement
-    const ocupacaoSelecionada = ocupacaoSelecionadaElement ? ocupacaoSelecionadaElement.value : null;
-    
+    const ocupacaoSelecionada = ocupacaoSelecionadaElement
+      ? ocupacaoSelecionadaElement.value
+      : null;
 
     const usuario = {
       email: email,
       nome: nome,
       senha: senha,
+
       Ocupaçao:
-        ocupacaoSelecionada === "aluno"
-          ? Ocupaçao.Aluno
-          : Ocupaçao.Professor,
+        ocupacaoSelecionada === "aluno" ? Ocupaçao.Aluno : Ocupaçao.Professor,
+
+      disciplina: disciplina,
     };
 
-    console.log(usuario);
+    // -----------------------------------------------------
+    // Enviar dados para o backend
 
-
-// ----------------------------------------------------- 
-// Enviar dados para o backend
+    const baseUrl = "http://localhost:3000";
 
     axios
       .post("http://localhost:3000/cadastro", {
@@ -78,6 +80,7 @@ export default function Cadastro() {
         senha,
         nome,
         Ocupaçao: usuario.Ocupaçao,
+        disciplina,
       })
       .then((response) => {
         console.log(response);
@@ -85,9 +88,18 @@ export default function Cadastro() {
       .catch((error) => {
         console.log(error);
       });
+
+    axios.get("/foo").catch(function (error) {
+      debugger;
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
   };
 
-// ----------------------------------------------------- 
+  // -----------------------------------------------------
 
   return (
     <Container>
@@ -148,7 +160,9 @@ export default function Cadastro() {
             <option value="">Selecione uma disciplina</option>
             <option value="rc">Redes de computadores</option>
             <option value="aps">Análise e projeto de sistemas</option>
-            <option value="mapn">Modelagem e Análise de Processo de Negócios</option>
+            <option value="mapn">
+              Modelagem e Análise de Processo de Negócios
+            </option>
             <option value="bd">Banco de Dados</option>
             <option value="lp">Linguagem de Programação</option>
             <option value="dw">Desenvolvimento Web</option>
